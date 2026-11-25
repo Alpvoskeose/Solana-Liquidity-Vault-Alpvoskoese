@@ -1,0 +1,26 @@
+# Build artifacts and caches
+**/target/
+**/node_modules/
+**/.anchor/
+**/coverage/
+**/.cache/
+**/dist/
+**/tmp/
+**/*.log
+
+# Local configuration and secrets
+**/.env
+**/.env.*
+!**/.env.example
+**/*keypair*.json
+**/*-keypair.json
+**/id.json
+**/wallet.json
+**/*.pem
+**/*.seed
+**/*mnemonic*
+**/*secret*
+
+# Editor and OS files
+.DS_Store
+Thumbs.db
