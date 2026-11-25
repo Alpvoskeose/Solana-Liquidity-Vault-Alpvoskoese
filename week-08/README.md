@@ -22,7 +22,7 @@ Liquidity Vault в следующих неделях будет хранить �
 | Ubuntu | 24.04 LTS |
 | Архитектура | x86_64 |
 | Rust / Cargo | 1.100.0 |
-| Solana CLI | 2.3.0 |
+| Solana CLI | 2.1.0 |
 | Anchor CLI / `anchor-lang` / `anchor-spl` | 0.31.1 |
 | AVM | 1.2.2 |
 | SBF platform-tools / bundled Rust | 1.51.1 / 1.84.1-dev |
@@ -31,7 +31,7 @@ Liquidity Vault в следующих неделях будет хранить �
 | TypeScript | 5.3.3 |
 | SPL Token JS SDK | 0.4.9 |
 
-Версии Anchor выбраны по проекту преподавателя. Его README указывает Solana CLI 1.18+, но не закрепляет конкретную версию; сборка Anchor 0.31.1 установила Solana CLI 2.3.0 и SBF platform-tools 1.51.1. TypeScript и SPL Token SDK закреплены в `package.json`, Rust-зависимости — в `Cargo.lock`.
+Версии Anchor выбраны по проекту преподавателя. Его README указывает Solana CLI 1.18+, но не закрепляет конкретную версию; здесь установлен и проверен Solana CLI 2.1.0, а `anchor test` успешно запускал с ним local validator. Для SBF-сборки Anchor отдельно установил platform-tools 1.51.1. TypeScript и SPL Token SDK закреплены в `package.json`, Rust-зависимости — в `Cargo.lock`.
 
 SBF builder использует собственный Rust 1.84.1-dev, поэтому Cargo.lock сохраняет совместимые версии транзитивных crates. Прямые pins `blake3` и `constant_time_eq` повторяют обоснование из manifest преподавателя и не добавляют функциональность программы.
 
@@ -76,11 +76,11 @@ flowchart LR
 
 ## Подготовка окружения
 
-На Ubuntu/Codespaces установите Rust stable, Solana CLI 2.3.0 и Anchor CLI 0.31.1 через AVM:
+На Ubuntu/Codespaces установите Rust stable, Solana CLI 2.1.0 и Anchor CLI 0.31.1 через AVM:
 
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal
-sh -c "$(curl -sSfL https://release.anza.xyz/v2.3.0/install)"
+sh -c "$(curl -sSfL https://release.anza.xyz/v2.1.0/install)"
 cargo install --git https://github.com/coral-xyz/anchor avm --locked
 avm install 0.31.1
 avm use 0.31.1
