@@ -105,7 +105,7 @@ anchor test
 
 `anchor test` поднимает локальный validator, деплоит программу в localnet и запускает TypeScript-интеграционные тесты. В тестах создаются настоящий тестовый SPL Mint и аккаунты; они проверяют состояние vault и mint-ов, права, PDA-карточки, повторное создание и неавторизованный выпуск shares.
 
-Последняя проверка в Codespaces: `anchor build` завершился успешно (с предупреждениями от макросов Anchor 0.31.1), `yarn tsc --noEmit` завершился успешно, `anchor test` — **5 passing, 0 failing**. Это пять тестовых функций `it`; внутри них есть дополнительные assertions.
+Проверка в Codespaces (2026-11-25): `yarn tsc --noEmit` и `cargo check --locked` завершились успешно; Rust-проверка выдала три предупреждения Anchor 0.31.1. `anchor test --skip-build` завершился успешно: **5 passing, 0 failing**. Тесты использовали существующий `target/deploy/liquidity_vault.so`; SBF-сборка в этой проверке не запускалась.
 
 ## Devnet
 
@@ -133,18 +133,27 @@ ANCHOR_WALLET="$HOME/.config/solana/id.json" \
 solana program show 4sPijvz6HPcDKjFx8BWZEomVy5G3N1oJpeZXMCtPL2qs --url devnet
 ```
 
-### Результаты devnet
+### Результаты Devnet (2026-11-25)
 
-Деплой **не подтверждён**: `solana program show` вернул, что аккаунт программы не найден. Devnet-баланс тестового кошелька — `0 SOL`; единственный запрос `solana airdrop 2` был отклонён из-за rate limit. Rent-exempt minimum для размера программы 275 288 байт составляет `1.39911328 SOL`; вместе с созданием тестовых аккаунтов и комиссиями потребуется ориентировочно 1.5–2 SOL.
+Деплой программы, создание тестового mint, инициализация vault и создание карточки пользователя завершены. Все четыре транзакции проверены командой `solana confirm` и имеют статус **Finalized**. Скрипт инициализации перечитал аккаунты из Devnet и подтвердил их ожидаемые адреса, полномочия и нулевые балансы. После операций остаток кошелька — **1.09219812 SOL**.
 
-| Сущность | Значение |
+| Сущность | Адрес / состояние |
 |---|---|
-| Тестовый кошелёк (публичный адрес) | `8e4137ux92gPoVgbAhx3kSYiaG927NWeuj5BDfXinfSF` |
-| Program ID | `4sPijvz6HPcDKjFx8BWZEomVy5G3N1oJpeZXMCtPL2qs` (сгенерирован локально; в devnet не найден) |
-| Vault / Share Mint / Token Account / User Card | Не созданы |
-| Подтверждённые транзакции / Explorer-ссылки | Нет |
+| Тестовый кошелёк (admin / upgrade authority) | [8e4137ux92gPoVgbAhx3kSYiaG927NWeuj5BDfXinfSF](https://explorer.solana.com/address/8e4137ux92gPoVgbAhx3kSYiaG927NWeuj5BDfXinfSF?cluster=devnet) |
+| Program ID | [4sPijvz6HPcDKjFx8BWZEomVy5G3N1oJpeZXMCtPL2qs](https://explorer.solana.com/address/4sPijvz6HPcDKjFx8BWZEomVy5G3N1oJpeZXMCtPL2qs?cluster=devnet) |
+| ProgramData | [9dPKWs519gdSUzaii71wPSykqLxEtrsrrBgPXxcTJWBv](https://explorer.solana.com/address/9dPKWs519gdSUzaii71wPSykqLxEtrsrrBgPXxcTJWBv?cluster=devnet) |
+| Token Mint | [3furDzWi5zE7v34NvWv7vJk2gnqqEe6UWf6LEXr9mGQ1](https://explorer.solana.com/address/3furDzWi5zE7v34NvWv7vJk2gnqqEe6UWf6LEXr9mGQ1?cluster=devnet) |
+| Vault State | [9R3GsMgsSmt1kowJKFiWuCG5DgpzTLyCpimJmW4e2V2w](https://explorer.solana.com/address/9R3GsMgsSmt1kowJKFiWuCG5DgpzTLyCpimJmW4e2V2w?cluster=devnet) |
+| Share Mint | [BzHqsRh8Pb56NvLioKrjsyLKWZGTw3qvtXVPCKxGbkv8](https://explorer.solana.com/address/BzHqsRh8Pb56NvLioKrjsyLKWZGTw3qvtXVPCKxGbkv8?cluster=devnet) |
+| Vault Token Account | [9de1NTjekiTcQrX2Frt8N6HBZssSVW4C52DnVALEc53H](https://explorer.solana.com/address/9de1NTjekiTcQrX2Frt8N6HBZssSVW4C52DnVALEc53H?cluster=devnet) |
+| User Card | [BUJ3zqKCuSyJLkZnmxSH3esX4cHRP7GYgozBsRTZpZh9](https://explorer.solana.com/address/BUJ3zqKCuSyJLkZnmxSH3esX4cHRP7GYgozBsRTZpZh9?cluster=devnet) |
 
-Чтобы продолжить, запросите тестовые SOL через [официальный faucet](https://faucet.solana.com/), затем выполните команды деплоя выше. Скрипт создаст адреса и выведет ссылки только после успешных подтверждений.
+| Операция | Подтверждённая транзакция |
+|---|---|
+| Деплой программы | [4P9FYbc3MynmNBdBwzFVBxyhNaEaMzPq5F5GNsVUiS68zji3w95icPCjj2cLECQbGso2m53SDRxAcHbruDxdiMrQ](https://explorer.solana.com/tx/4P9FYbc3MynmNBdBwzFVBxyhNaEaMzPq5F5GNsVUiS68zji3w95icPCjj2cLECQbGso2m53SDRxAcHbruDxdiMrQ?cluster=devnet) |
+| Создание Token Mint | [2n2Q7LDCpU9YCYaXp6C8CMgrdFVamxEFHdnMPbPFaLZbHTkRsZ1NtEA8B9p8aQUZHwg23okdpmxUqjERambNgTYu](https://explorer.solana.com/tx/2n2Q7LDCpU9YCYaXp6C8CMgrdFVamxEFHdnMPbPFaLZbHTkRsZ1NtEA8B9p8aQUZHwg23okdpmxUqjERambNgTYu?cluster=devnet) |
+| Инициализация Vault | [4UjKBNCd3e4C9jD7omHyEdVFhpP8L9aKQqwbMPFmE7epf11VWvWGYdj2e1BeChjATxgjQ5jJLrusg5EK4yNiE7TP](https://explorer.solana.com/tx/4UjKBNCd3e4C9jD7omHyEdVFhpP8L9aKQqwbMPFmE7epf11VWvWGYdj2e1BeChjATxgjQ5jJLrusg5EK4yNiE7TP?cluster=devnet) |
+| Создание User Card | [2LmxjGdB5dJ9PfB1LUSKK7CocSm55RKpEQEB2ug2oLFkLyu23dHNJWsxqHSLMZa1bM6DDVPA3RLjZtq8Mdy79wpi](https://explorer.solana.com/tx/2LmxjGdB5dJ9PfB1LUSKK7CocSm55RKpEQEB2ug2oLFkLyu23dHNJWsxqHSLMZa1bM6DDVPA3RLjZtq8Mdy79wpi?cluster=devnet) |
 
 ## Ограничения
 
